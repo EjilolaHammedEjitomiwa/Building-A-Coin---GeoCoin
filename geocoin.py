@@ -67,7 +67,7 @@ class Blockchain:
     
     def add_transaction(self,sender, reciever,amount):
         self.transactions.append({'sender' : sender,
-                                  'reciever' : reciever
+                                  'reciever' : reciever,
                                   'amount' : amount
                                   })
         previous_block = self.get_previous_block()
@@ -75,6 +75,37 @@ class Blockchain:
          
     
     def add_node(self, address):
+        parsed_url = urlparse(address)
+        self.nodes.add(parsed_url.netloc)
+        
+        
+    def replace_chain (self):
+        network = self.nodes
+        longest_chain = None
+        max_length = len(self.chain)
+        
+        for node in network:
+            response = requests.get(f'http://{node}/get_chain')
+            if response.status_code == 200:
+               length =  response.json()['length']
+               chain = response.json()['chain']
+               if length > max_length and self.is_chain_valid(chain):
+                   max_length = length
+                   longest_chain() = chain
+        
+        
+        if longest_chain:
+            self.chain = longest_chain
+            return True
+        
+        return False
+        
+                   
+                   
+                   
+
+                
+        
         
         
         
@@ -127,7 +158,7 @@ def is_chain_valid():
 # running the app
 app.run(host = '0.0.0.0', port = 5000)
 
-# 7:52
+# 9:06
 
 
 
